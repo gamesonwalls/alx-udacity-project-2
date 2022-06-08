@@ -34,20 +34,25 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
   app.get("/filteredimage", async (req: Request, res: Response) => {
     let img_url = req.query.image_url
 
+
     if (!img_url) {
       return res.status(400).send('Image Url is Required')
     }
 
+    // console.log("img_url", img_url)
     try {
       const filteredpath = await filterImageFromURL(img_url)
-      res.sendFile(filteredpath, (err: any, data: any) => {
+
+      res.sendFile(filteredpath, (err: Error, data: any) => {
         deleteLocalFiles([filteredpath]);
+
         if (err) {
-          return res.status(500).send('An error whilst sending file')
+          res.status(500).send('An error whilst sending file')
         }
-        res.send(201).send('File successfully delivered')
+
       })
-    } catch (error: any) {
+    } catch (error) {
+
       /// when there is an error in the try brackets
       res.status(500).send('Oop something went wrong')
     }
